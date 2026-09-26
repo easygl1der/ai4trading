@@ -1,0 +1,113 @@
+\chapter{Crypto 与预测市场}
+
+本章围绕 Crypto 市场、预测市场与 Polymarket 展开。策略、回测、纸面交易和 VPS 运行说明都留在对应的市场语境中。
+
+% BEGIN USER NOTE: Crypto 与预测市场路线
+% END USER NOTE
+
+\section{Crypto 市场基础}
+
+% BEGIN USER NOTE: Crypto 市场基础
+% END USER NOTE
+
+\section{预测市场与 Polymarket}
+
+\subsection{市场结构、参与者与结算}
+
+\subsection{合约、价格与概率}
+
+\subsection{市场数据、订单簿与成交}
+
+\label{sec:polymarket-rtds-data}
+
+\textbf{数据层需要先分清。} Polymarket 的市场概率、CLOB 订单簿与外部标的价格不是同一个对象。对 BTC 的短周期方向市场，本项目当前使用的是 Polymarket RTDS 转发的 Chainlink BTC/USD 价格；它不是 CLOB 的 Yes/No 概率，也不是 Binance 或 Coinbase 的现货报价。CLOB 的订单簿数据用于观察市场报价、价差和流动性；RTDS 价格流则是策略比较“外部标的当前价格”和“该轮开盘价格”的参考输入。
+
+\textbf{当前 RTDS 接口。} 官方端点为 \url{wss://ws-live-data.polymarket.com}，订阅主题为 \texttt{crypto\_prices\_chainlink}，BTC 使用斜杠格式的 \texttt{btc/usd}。该服务是 WebSocket 实时流；订阅可在不断线时增删，并且客户端应每隔 \(5\) 秒发送一次 \texttt{PING} 维持连接。官方文档保证 crypto payload 中的 \texttt{symbol}、毫秒 Unix 时间戳 \texttt{timestamp} 与数值价格 \texttt{value}；同一主题也列出 \texttt{eth/usd}、\texttt{sol/usd} 和 \texttt{xrp/usd}，但当前策略只订阅 BTC。\sidenote{官方接口与字段定义：\href{https://docs.polymarket.com/market-data/websocket/rtds}{Polymarket RTDS documentation}.}
+
+\begin{center}
+\small
+\textbf{表：当前 Chainlink RTDS 数据契约}\par\medskip
+\begin{tabular}{@{}p{0.22\textwidth}p{0.30\textwidth}p{0.38\textwidth}@{}}
+\toprule
+字段或对象 & 当前约定 & 在系统中的用途 \\
+\midrule
+\texttt{topic} / \texttt{symbol} & \texttt{crypto\_prices\_chainlink} / \texttt{btc/usd} & 确认这是 Polymarket 转发的 Chainlink BTC/USD 流，而非 CLOB 概率或交易所现货。 \\
+\texttt{timestamp} & payload 中的毫秒 Unix 源时间 & 判断新鲜度、乱序与本轮开盘基准；不以本机收到消息的时间替代。 \\
+\texttt{value} & 官方说明的数值价格字段 & 唯一进入策略计算的价格。 \\
+\texttt{full\_accuracy\_value} & 线上可见的可选原始字段，缩放规则未在 crypto 文档中定义 & 原样写入审计记录，不作为可直接计算的价格。 \\
+连接保活 & 每隔 \(5\) 秒发送 \texttt{PING} & 断线后指数退避重连，并重新订阅。 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{时间语义与接收延迟。} 设 \(t_{\mathrm{src}}\) 为 payload 的源时间戳，\(t_{\mathrm{recv}}\) 为 VPS 接到该消息并写入审计日志的本地时间，则这里能观测的是
+
+\[
+\Delta_{\mathrm{obs}} = t_{\mathrm{recv}} - t_{\mathrm{src}}.
+\]
+
+这不是 Chainlink 内部生成价格的延迟，也不是市场结算的法律边界；它只有在双方时钟正常同步时才可解释为端到端可见延迟。截至本笔记这次只读采样，最近 \(337\) 个 BTC tick 的源时间戳大致以 \(1\) 秒间隔递增。对应的 \(\Delta_{\mathrm{obs}}\) 最小值为 \(0.944\) 秒，中位数为 \(1.421\) 秒，均值为 \(1.460\) 秒，\(P95\) 为 \(1.864\) 秒，最大值为 \(2.769\) 秒。这些数字是一次运行观测，不应外推为服务等级保证。
+
+\textbf{新鲜度、乱序与开仓闸门。} 系统以 \(t_{\mathrm{src}}\) 而非 \(t_{\mathrm{recv}}\) 判断数据新鲜度：乱序 tick 被拒绝，进入策略上下文前的健康阈值为 \(5\) 秒。更宽松的 \(30\) 秒阈值只用于拒绝明显过旧的入站消息，不能理解为允许策略在 \(30\) 秒旧的价格上开仓。RTDS 断开、健康检查失败、模型尚未预热，或缺少本轮开始后第一个已接受 tick 时，均禁止新增纸面仓位。断线后客户端采用指数退避重连并重新订阅。
+
+\textbf{精度与审计。} 线上消息中曾观察到 \texttt{full\_accuracy\_value}，系统会原样保存在策略决策审计字段中；但 crypto RTDS 的官方字段说明没有定义该字段的十进制缩放规则。因此计算只使用文档定义的 \texttt{value}，不把 \texttt{full\_accuracy\_value} 的大整数擅自解释为可直接交易的价格。这个区分让策略重放时既能保留原始证据，又不会将未说明的编码约定引入计算。
+
+\begin{center}
+\small
+\textbf{表：纸面交易的 RTDS 数据闸门}\par\medskip
+\begin{tabular}{@{}p{0.26\textwidth}p{0.28\textwidth}p{0.36\textwidth}@{}}
+\toprule
+检查项 & 通过条件 & 不通过时的行为 \\
+\midrule
+消息顺序 & 新 tick 的 \(t_{\mathrm{src}}\) 严格晚于已接受 tick & 拒绝乱序消息，不更新策略状态。 \\
+策略新鲜度 & 最新源 tick 年龄不超过 \(5\) 秒 & 禁止建立新的纸面仓位。 \\
+入站上限 & 新到消息年龄不超过 \(30\) 秒 & 拒绝明显过旧消息；该阈值不是开仓许可。 \\
+模型预热 & 保留 tick 数达到模型要求，且已得到有效波动率估计 & 不生成可交易上下文。 \\
+开盘参照 & 存在本轮开始后首个已接受的源 tick & 不计算该轮方向判断，也不新开仓。 \\
+连接状态 & RTDS 已连接且订阅恢复 & 等待重连和重新订阅完成。 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% BEGIN USER NOTE: Polymarket RTDS 与 Chainlink 数据流
+% END USER NOTE
+
+\subsection{可研究的信号与策略假设}
+
+% BEGIN USER NOTE: 预测市场与 Polymarket
+% END USER NOTE
+
+\section{策略、交易机制与高频场景}
+
+\subsection{策略的经济机制}
+
+\subsection{盘口、流动性与滑点}
+
+\subsection{高频约束、延迟与执行风险}
+
+% BEGIN USER NOTE: 策略、交易机制与高频场景
+% END USER NOTE
+
+\section{回测、验证与纸面交易}
+
+\subsection{预测市场回测的特殊问题}
+
+\subsection{样本泄漏、时间一致性与成本}
+
+\subsection{AFML Chapter 11：回测与过拟合控制}
+
+\subsection{Paper Trading 与实盘前验收}
+
+% BEGIN USER NOTE: 回测、验证与纸面交易
+% END USER NOTE
+
+\section{接口、代码与 VPS 运行}
+
+\subsection{交易与数据接口}
+
+\subsection{VPS 服务、任务调度与密钥边界}
+
+\subsection{日志、监控、告警与人工接管}
+
+% BEGIN USER NOTE: 接口、代码与 VPS 运行
+% END USER NOTE

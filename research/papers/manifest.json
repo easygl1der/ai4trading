@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "frozen_at": "2026-09-25",
+  "inclusion": "score >= 6 in notes/papers.md OR kept in notes/mean-reversion.md, notes/regression-gates.md, or notes/stable-reversion.md",
+  "arxiv": [
+    {
+      "id": "2607.26245",
+      "title": "OpenMarket (Polymarket–Binance sync; zero OOS edge)",
+      "score": 10,
+      "sources": ["papers.md"]
+    },
+    {
+      "id": "2604.24366",
+      "title": "The Anatomy of a Decentralized Prediction Market (Dubach)",
+      "score": 9.5,
+      "sources": ["papers.md", "mean-reversion.md", "stable-reversion.md"]
+    },
+    {
+      "id": "2606.04217",
+      "title": "Polymarket-v1 trade direction / VPIN (Qin & Yang)",
+      "score": 9,
+      "sources": ["papers.md", "stable-reversion.md"]
+    },
+    {
+      "id": "2609.22246",
+      "title": "Fake news shifts calibrated probabilities",
+      "score": 8.5,
+      "sources": ["papers.md"]
+    },
+    {
+      "id": "2604.27914",
+      "title": "Abstention with coverage guarantees",
+      "score": 8.5,
+      "sources": ["papers.md"]
+    },
+    {
+      "id": "2606.31675",
+      "title": "5-minute settlement window spot order-flow spike",
+      "score": 8,
+      "sources": ["papers.md"],
+      "note": "TeX bundle incomplete in corpus notes"
+    },
+    {
+      "id": "2608.21888",
+      "title": "15m crypto spot mean reversion (negative control)",
+      "score": 8,
+      "sources": ["papers.md", "mean-reversion.md"],
+      "role": "negative_control"
+    },
+    {
+      "id": "2609.20017",
+      "title": "Screening rent vs spread capture (Zang et al.)",
+      "score": 8.5,
+      "sources": ["papers.md", "stable-reversion.md"],
+      "pdf_in_repo": false,
+      "pdf_in_repo_reason": "exceeds ~25MB bundle cap; run scripts/download_research_papers.sh"
+    },
+    {
+      "id": "2607.08199",
+      "title": "Volatility in prediction markets (structural)",
+      "score": 8.5,
+      "sources": ["papers.md", "mean-reversion.md"]
+    },
+    {
+      "id": "2603.24137",
+      "title": "LOB simulation / execution sensitivity",
+      "score": 7,
+      "sources": ["papers.md"]
+    },
+    {
+      "id": "2602.19520",
+      "title": "Domain-specific calibration (Le)",
+      "score": 6,
+      "sources": ["papers.md", "mean-reversion.md", "regression-gates.md", "stable-reversion.md"]
+    },
+    {
+      "id": "2609.15368",
+      "title": "Resolution vs settlement state machine",
+      "score": 6,
+      "sources": ["papers.md"]
+    },
+    {
+      "id": "2608.00666",
+      "title": "Executable vs mirror arbitrage (Gebele et al.)",
+      "score": 6.5,
+      "sources": ["papers.md", "mean-reversion.md"]
+    },
+    {
+      "id": "2605.31431",
+      "title": "Time discount / locked capital in PM",
+      "score": 6,
+      "sources": ["papers.md"]
+    },
+    {
+      "id": "2607.16970",
+      "title": "Fundamental anchoring and mean reversion (Novotny)",
+      "score": 8,
+      "sources": ["stable-reversion.md"]
+    },
+    {
+      "id": "2605.00864",
+      "title": "NBA LOB executable arbitrage rarity (Cheng et al.)",
+      "score": 6,
+      "sources": ["mean-reversion.md"]
+    },
+    {
+      "id": "2606.19517",
+      "title": "Polymarket vs options implied binary gap (Portnaya)",
+      "score": 10,
+      "sources": ["regression-gates.md"]
+    },
+    {
+      "id": "2510.15205",
+      "title": "Logit jump-diffusion / belief vol (Dalen)",
+      "score": 8,
+      "sources": ["regression-gates.md"]
+    },
+    {
+      "id": "2607.17991",
+      "title": "Optimal MM / implied probability (Feil & Nendel)",
+      "score": 6,
+      "sources": ["regression-gates.md"]
+    },
+    {
+      "id": "2404.15478",
+      "title": "Nested OU fair value (Barzykin et al.)",
+      "score": 7,
+      "sources": ["stable-reversion.md"]
+    },
+    {
+      "id": "2606.01477",
+      "title": "AS vs CJ single risk parameter (Feys)",
+      "score": 6,
+      "sources": ["stable-reversion.md"]
+    },
+    {
+      "id": "2609.12878",
+      "title": "Favorite–longshot bias (Cardozo & Rivero-Wildemauwe)",
+      "score": 7,
+      "sources": ["mean-reversion.md"]
+    }
+  ],
+  "link_only": [
+    {
+      "kind": "ssrn",
+      "id": "7134801",
+      "url": "https://doi.org/10.2139/ssrn.7134801",
+      "title": "Fair value pricing in short-dated BTC binaries (Semenas)",
+      "score": 8,
+      "sources": ["mean-reversion.md", "regression-gates.md"]
+    },
+    {
+      "kind": "ssrn",
+      "id": "7186118",
+      "url": "https://doi.org/10.2139/ssrn.7186118",
+      "title": "Fee-aware break-even framework (Charre)",
+      "score": 9,
+      "sources": ["mean-reversion.md"]
+    },
+    {
+      "kind": "doi",
+      "id": "10.3390/a19080704",
+      "url": "https://doi.org/10.3390/a19080704",
+      "title": "Adaptive quantile gate for short crypto event contracts (Hao et al.)",
+      "score": 8,
+      "sources": ["regression-gates.md"]
+    },
+    {
+      "kind": "ssrn",
+      "id": "7237578",
+      "url": "https://doi.org/10.2139/ssrn.7237578",
+      "title": "Quasi fair value under inventory risk (Mitra & Tyagi)",
+      "score": 7,
+      "sources": ["regression-gates.md"]
+    },
+    {
+      "kind": "ssrn",
+      "id": "7115858",
+      "url": "https://doi.org/10.2139/ssrn.7115858",
+      "title": "Falsifying retail narratives on Kalshi (Curtin)",
+      "score": 6,
+      "sources": ["regression-gates.md"]
+    }
+  ]
+}

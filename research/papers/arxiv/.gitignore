@@ -1,0 +1,5 @@
+# Allow committed bundle under repo-wide *.pdf ignore
+!*.pdf
+
+# Local-only fetch (bundle cap); listed with pdf_in_repo: false in manifest.json
+2609.20017.pdf

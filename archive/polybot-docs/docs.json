@@ -1,0 +1,13 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Polybot Research",
+  "colors": {"primary": "#157d63", "light": "#5fb69c", "dark": "#0b5341"},
+  "navigation": {
+    "groups": [
+      {"group": "Research notebook", "pages": ["index", "research-method", "strategy-families", "live-vs-replay"]},
+      {"group": "Strategy Lab reviews", "pages": ["reports/polybot_strategy_lab_comparative_review_20260717", "reports/polybot_strategy_lab_incident_20260716"]},
+      {"group": "Full source reports", "pages": ["reports", "reports/polybot_strategy1_parameter_sensitivity_report_20260708", "reports/polybot_strategy1_filter_ablation_report_20260708", "reports/polybot_trade_timing_report_20260707", "reports/polybot_trade_hour_of_day_report_20260708", "reports/polybot_orderbook_snapshot_insights_20260706"]}
+    ]
+  }
+}

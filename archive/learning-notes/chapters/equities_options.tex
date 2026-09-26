@@ -1,0 +1,99 @@
+\chapter{股市与期权市场}
+
+本章从股票自动监测与交易信号出发，连接价格、订单簿、期权、市场微观结构和基本面分析。
+
+% BEGIN USER NOTE: 股市与期权市场路线
+% END USER NOTE
+
+\section{股票市场基础}
+
+\subsection{价格、收益率、成交量与公司行为}
+
+\subsection{市场参与者与交易制度}
+
+% BEGIN USER NOTE: 股票市场基础
+% END USER NOTE
+
+\section{股票自动监测与交易信号}
+
+\subsection{价格、成交量与波动率信号}
+
+\subsection{自动提醒、筛选与观察列表}
+
+\subsection{信号解释、失效条件与复核}
+
+% BEGIN USER NOTE: 股票自动监测与交易信号
+% END USER NOTE
+
+\section{股票订单簿与市场微观结构}
+
+\subsection{Bid、Ask、Spread 与 Mid-price}
+
+\subsection{订单簿、逐笔成交与流动性}
+
+\subsection{订单流、冲击成本与短期价格形成}
+
+% BEGIN USER NOTE: 股票订单簿与市场微观结构
+% END USER NOTE
+
+\section{期权市场}
+
+\subsection{Call、Put、买入、卖出与到期}
+
+\textbf{先区分交割与盘中价格形成。} 对 NVDA、AMD、MU、QQQ、SMH 等美国股票或 ETF 的标准化期权，通常一张合约对应 \(100\) 股，且 equity options 采用美式行权：long call 可以在到期前行权买入标的，long put 可以行权卖出标的；short 的对手方则可能被指派履行相反义务。真正的指派由 OCC 向清算会员分配，再由券商按照其规则分配给短仓客户，因此不是“当初卖给我的那个交易者”一一对应。\sidenote{行权、指派和券商截止时间的权威说明：\href{https://www.optionseducation.org/referencelibrary/faq/options-exercise}{OIC: Options Exercise} 与 \href{https://www.optionseducation.org/referencelibrary/faq/options-assignment}{OIC: Options Assignment}.}
+
+\textbf{一个到期日 call 的例子。} 设 NVDA 到期日现价为 \(S_T=110\)，买入一张执行价 \(K=90\) 的 call，权利金为每股 \(12\) 美元，合约乘数为 \(m=100\)。到期时的内在价值和忽略交易成本后的经济损益分别为
+
+\[
+\operatorname{IV}=m\max(S_T-K,0)=100\times(110-90)=2000,
+\]
+
+\[
+\Pi=\operatorname{IV}-m\times12=2000-1200=800.
+\]
+
+若选择行权，持有人需要按 \(K\) 支付 \(9000\) 美元并获得 \(100\) 股；但多数交易者会在到期前 \textit{sell to close}，以平仓实现期权损益，而不是为了取得股票交割。short option 的对应平仓是 \textit{buy to close}。\textit{Roll} 则是平掉近到期旧合约，同时开立更晚到期或不同 strike 的新合约；它不是对同一合约“续费”。价内合约到期时，OCC 对清算会员采用 \(0.01\) 美元价内阈值的 exercise-by-exception 行政流程，但客户和券商可以给出相反指令，具体截止时间必须以券商规则为准。
+
+因此，行权和被指派是收盘后或到期处理的重要风险，却通常不是解释盘中价格路径的首要机制；更值得研究的是到期前风险账簿的动态对冲。
+
+\subsection{期权价格、隐含波动率与 Greeks}
+
+\textbf{Delta 与 Gamma。} Delta 描述期权价格对标的价格的局部敏感度，Gamma 描述 Delta 随标的价格变化的速度。令做市商期权账簿的净 Delta 为 \(\Delta_{\mathrm{opt}}(S)\)，以股票、ETF 或期货做线性对冲的头寸为 \(h\)，Delta 中性近似给出 \(h=-\Delta_{\mathrm{opt}}\)。因而小幅价格变动下有
+
+\[
+dh \approx -\Gamma_{\mathrm{opt}}\,dS.
+\]
+
+这里的 \(\Gamma_{\mathrm{opt}}\) 是整个账簿的净 Gamma，符号比 call 或 put 的名义方向更重要。若做市商净长 Gamma，标的上涨时会卖出一部分 hedge、下跌时会买回，潜在地抑制短期波动；若净短 Gamma，则可能上涨时被动买入、下跌时被动卖出，形成放大价格运动的正反馈。这个机制来自维持风险中性，而不是做市商主观地看多或看空。
+
+\textbf{为什么 0DTE 与接近平值 strike 更敏感。} 当 \(T\) 很小且 \(S\) 接近 \(K\) 时，Gamma 往往较高，较小的 \(dS\) 就会要求更频繁的 hedge rebalancing。隐含波动率 \(\sigma_{\mathrm{IV}}\) 还给出一个粗略的到期前预期波动尺度：
+
+\[
+\operatorname{ExpectedMove}\approx S\sigma_{\mathrm{IV}}\sqrt{T}.
+\]
+
+这只是常用近似，不包含跳跃、偏度、分红、融资和实际交易成本。它可以作为解释 option chain 的尺度工具，不能代替对真实做市商账簿的观测。
+
+\subsection{期权订单流与股票信号的关系}
+
+\textbf{“大 strike”不是一个单一变量。} 对 \(0\) DTE 或临近到期合约，值得同时看四类信息：spot 到 strike 的距离、剩余期限、open interest 与当日成交量、以及模型估计的 Gamma/Delta 敏感度。一个远离现价的高 OI strike 可能对当前价格几乎没有直接 Gamma 压力；相反，价格正在穿越的近到期 ATM strike 即使名义 OI 较小，也可能更值得关注。
+
+\textbf{Pinning 与 squeeze 是条件性现象。} 有研究发现，股票在期权到期日更可能收在或靠近 strike 附近，并把 hedge rebalancing 视为可能机制之一；但论文同时讨论了其他机制，不能把“高 OI”直接翻译为“价格一定被吸到该 strike”。\sidenote{Ni、Pearson 与 Poteshman 的到期日 clustering 研究：\href{https://www.sciencedirect.com/science/article/pii/S0304405X05000577}{Stock price clustering on option expiration dates}.} 另一端的证据也重要：Cboe 对 SPX \(0\) DTE 的分析发现，平均意义下其估计的做市商净 Gamma 对冲流相对 S\&P 期货流动性很小；该结论只针对 SPX，不能外推为 NVDA、MU 或其他高 beta 单股的结论。\sidenote{范围与限制：\href{https://www.cboe.com/insights/posts/volatility-insights-evaluating-the-market-impact-of-spx-0-dte-options/}{Cboe 0DTE market-impact analysis}.}
+
+\textbf{对半导体标的的解释。} NVDA、AMD、MU 的期权活动可能改变极短时间尺度上的路径，尤其在接近 \(0\) DTE 大 strike、价格快速穿越 strike、尾盘 hedge unwind 或突发消息重定价时。但财报、供应链、AI 主题资金、ETF 流、指数再平衡和宏观风险偏好仍可能是更大的驱动。期权压力更适合作为放大器或阻尼器的假设，而不应被写成单独的方向性发动机。
+
+\textbf{系统中的正确位置。} 未来监测台应展示“到期压力图”，而不是发出“必然 pin”信号：今日/本周到期、附近 strike、spot 距离、OI、当日 volume、ATM IV、粗略 expected move、数据时间戳和新闻/现货确认。界面必须标注净 dealer Gamma 方向不可直接从总 OI 观察到；OI 也无法区分新开、平仓、roll，以及谁持有 long 或 short。Yahoo option chain 足够做粗略的 expected move、ATM IV 与 strike concentration；严肃研究实时 GEX、\(0\) DTE flow、trade-at-bid/ask 分类和订单方向，则需要 OPRA 级实时期权报价与成交数据。
+
+% BEGIN USER NOTE: 期权市场
+% END USER NOTE
+
+\section{基本面与事件驱动分析}
+
+\subsection{财务报表与估值}
+
+\subsection{新闻、财报与公司事件}
+
+\subsection{基本面信号如何进入监测系统}
+
+% BEGIN USER NOTE: 基本面与事件驱动分析
+% END USER NOTE

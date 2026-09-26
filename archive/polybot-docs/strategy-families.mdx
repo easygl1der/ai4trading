@@ -1,0 +1,24 @@
+---
+title: Strategy families
+description: Distinct mechanisms in the paper lab and parameters that make runs independently attributable.
+---
+
+# Strategy families
+
+## Mean reversion
+
+The mean-reversion runs trade a divergence between market-implied and conservative theory probability:
+
+$$
+I_t = p_{market,t} - p_{theory,t}.
+$$
+
+When $\lvert I_t\rvert$ reaches the configured threshold, the candidate direction is the underpriced side. Entry still requires the time window, fee-aware edge, point-in-time spread, order-book imbalance, and flow gates. Strict, balanced, conservative, discovery, and liquid runs retain separate ledgers so their PnL and rejection histories remain attributable to their respective parameter sets.
+
+## Late resolution
+
+Late-resolution runs only consider a short terminal slice of the five-minute market. They seek continuation toward a sufficiently confirmed settlement outcome, while retaining price, spread, remaining-time, and fee gates. They are not blanket purchases of high-probability contracts.
+
+## Momentum and microstructure
+
+Spot-impulse and book-pressure runs use BTC movement, order-book imbalance, and taker flow as directional evidence. Their guardrails distinguish an observed short-horizon impulse from an execution-ready trade.

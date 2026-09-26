@@ -1,0 +1,21 @@
+[Unit]
+Description=TradingView-Lite Risk Agent Backend
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=yueyh
+Group=yueyh
+WorkingDirectory=/home/yueyh/services/tradingview-lite-backend
+EnvironmentFile=-/home/yueyh/services/tradingview-lite-backend/tradingview-lite.env
+ExecStart=/home/yueyh/services/tradingview-lite-backend/tradingview-lite-backend
+Restart=always
+RestartSec=5
+TimeoutStopSec=20
+KillSignal=SIGINT
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
