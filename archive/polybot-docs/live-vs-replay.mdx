@@ -1,0 +1,12 @@
+---
+title: Live versus replay discrepancy
+description: A current out-of-sample warning for a high-ranking replay candidate.
+---
+
+# Live versus replay discrepancy
+
+The strongest corrected replay combination achieved a longest loss streak of six during the historical window. On its first live-paper day, the corresponding experiment already observed seven consecutive losing decisions.
+
+This does not prove the strategy invalid. It is a concrete out-of-sample warning: market regime, fill assumptions, stale-book effects, or ordinary variance can all change the realized sequence. It does prove that a backtest leaderboard is not a deployment decision rule.
+
+The lab therefore preserves every decision, rejected entry, fee, fill, loss exit, and concurrent run separately. The next research question is not “which point is highest on the replay chart?” but whether a configuration keeps its risk behavior across new windows without relying on an unmodeled execution artifact.

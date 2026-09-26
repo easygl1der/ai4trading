@@ -1,0 +1,24 @@
+---
+title: Research method and boundaries
+description: What the replay measures, what it does not simulate, and why parameter ranking is not deployment evidence.
+---
+
+# Research method and boundaries
+
+The replay reads recorded Polymarket order-book snapshots alongside $p_{market,t}$, $p_{theory,t}$, imbalance, elapsed market time, and remaining settlement time. It reconstructs a fee-aware decision path using visible top-of-book / VWAP observations.
+
+The relevant decision quantity is the post-cost edge:
+
+$$
+e_t = p_{theory,t} - a_t - f_t.
+$$
+
+Here $a_t$ is the executable ask for the selected side and $f_t$ is the fee estimate. A high model probability is not enough; $e_t$ must remain positive after execution costs.
+
+## What this replay cannot prove
+
+- Queue priority, message latency, cancellation races, partial fills, and adverse selection are not simulated exactly.
+- The theoretical probability is evaluated from stored model inputs; it is not a counterfactual re-fit for every candidate.
+- A parameter sweep makes selection bias easier, not harder. Its main use is to rule out fragile regions and explain risk changes.
+
+For the full methodology, tables, and charts, read the source reports in the navigation rather than treating this page as a substitute.
